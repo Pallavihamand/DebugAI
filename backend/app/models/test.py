@@ -1,7 +1,7 @@
+# app/models/test.py
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, Text, Float, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
-
 from app.database.connection import Base
 
 class Test(Base):
@@ -16,8 +16,10 @@ class Test(Base):
 
     # Relationships
     project = relationship("Project", back_populates="tests")
-    creator = relationship("User", foreign_keys=[created_by])
     runs = relationship("TestRun", back_populates="test", cascade="all, delete-orphan")
+    
+    # CRITICAL FIX: Ensure 'failures' exists here to match Failure.test (back_populates="failures")
+    failures = relationship("Failure", back_populates="test", cascade="all, delete-orphan")
 
 
 class TestRun(Base):
@@ -25,13 +27,9 @@ class TestRun(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     test_id = Column(Integer, ForeignKey("tests.id"), nullable=False)
-    status = Column(String, nullable=False)  # e.g., "passed", "failed", "error"
-    execution_time_ms = Column(Float, nullable=False)
-    error_message = Column(Text, nullable=True)
-    stack_trace = Column(Text, nullable=True)
+    status = Column(String, nullable=False)
     executed_by = Column(Integer, ForeignKey("users.id"), nullable=False)
     executed_at = Column(DateTime, default=datetime.utcnow)
 
     # Relationships
     test = relationship("Test", back_populates="runs")
-    executor = relationship("User", foreign_keys=[executed_by])
