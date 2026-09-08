@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 
-# Import engine, get_db, and Base directly from connection
+# Import connection objects
 from app.database.connection import engine, get_db, Base
 import app.models  # Ensures all models and relationships are registered
 
@@ -18,7 +18,7 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Include API Routers
+# Include API Routers cleanly without duplicates
 app.include_router(auth.router)
 app.include_router(projects.router)
 app.include_router(tests.router)
