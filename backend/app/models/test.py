@@ -15,6 +15,8 @@ class Test(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     # Relationships
+    project = relationship("Project", back_populates="tests")
+    creator = relationship("User", foreign_keys=[created_by])
     runs = relationship("TestRun", back_populates="test", cascade="all, delete-orphan")
 
 
@@ -32,3 +34,4 @@ class TestRun(Base):
 
     # Relationships
     test = relationship("Test", back_populates="runs")
+    executor = relationship("User", foreign_keys=[executed_by])
