@@ -12,4 +12,4 @@ class Analysis(Base):
     suggested_fix = Column(Text, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
 
-    bug = relationship("Bug", back_populates="analyses")
+    bug = relationship("Bug", back_populates="analysis")
